@@ -1,5 +1,8 @@
-.notification-items {
-  border: 2px dashed #e1003c;
-  padding: 0.5rem;
-  margin: 1rem;
+:root {
+  --main-color: #e01d3f;
+}
+
+.Notifications {
+  border: 3px solid var(--main-color);
+  padding: 50px;
 }
