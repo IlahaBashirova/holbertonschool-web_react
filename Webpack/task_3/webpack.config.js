@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
+  mode: 'development',
+
   entry: {
     all: [
       './modules/header/header.js',
@@ -10,35 +12,48 @@ module.exports = {
       './modules/footer/footer.js',
     ],
   },
+
   output: {
-    path: path.resolve(__dirname, 'public'),
     filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'public'),
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({ title: 'Holberton Dashboard' }),
-  ],
+
   devtool: 'inline-source-map',
+
   devServer: {
-    static: {
-      directory: path.resolve(__dirname, 'public'),
-    },
+    static: path.join(__dirname, 'public'),
+    compress: true,
     port: 8564,
   },
-  mode: 'development',
+
   module: {
     rules: [
-      { test: /\.css$/i, use: ['style-loader', 'css-loader'] },
       {
-        test: /\.(gif|png|jpe?g|svg)$/i,
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'], // ✅ correct order
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
         use: [
           'file-loader',
           {
             loader: 'image-webpack-loader',
-            options: { bypassOnDebug: true, disable: true },
+            options: {
+              bypassOnDebug: true,
+              disable: true,
+            },
           },
         ],
       },
     ],
+  },
+
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({ title: 'Holberton Dashboard' }),
+  ],
+
+  optimization: {
+    splitChunks: { chunks: 'all' },
   },
 };
