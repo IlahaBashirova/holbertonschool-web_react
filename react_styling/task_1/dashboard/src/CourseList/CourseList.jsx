@@ -1,43 +1,50 @@
-import React from "react";
-import CourseListRow from "./CourseListRow";
+import CourseListRow from './CourseListRow';
+import WithLogging from '../HOC/WithLogging';
 
-class CourseList extends React.Component {
-  static defaultProps = {
-    courses: [],
-  };
-
-  render() {
-    const { courses } = this.props;
-
-    return (
-      <div className="w-4/5 mx-auto">
-        <table id="CourseList" className="w-full border-collapse">
-          <thead>
-            <CourseListRow isHeader={true} textFirstCell="Available courses" />
-            <CourseListRow
-              isHeader={true}
-              textFirstCell="Course name"
-              textSecondCell="Credit"
-            />
-          </thead>
-
-          <tbody>
-            {courses.length > 0 ? (
-              courses.map((course) => (
-                <CourseListRow
-                  key={course.id}
-                  textFirstCell={course.name}
-                  textSecondCell={course.credit}
-                />
-              ))
-            ) : (
-              <CourseListRow isHeader={true} textFirstCell="No course available yet" />
-            )}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
+function CourseList({ courses = [] }) {
+  return (
+    <div className='courses mx-auto my-32 w-4/5 h-[29vh]'>
+      {
+        courses.length > 0 ? 
+        (
+          <table id="CourseList" className='w-full border-collapse border border-gray-300'>
+            <thead>
+              <CourseListRow 
+                textFirstCell="Available courses"
+                isHeader={true}
+              />
+              <CourseListRow 
+                textFirstCell="Course name" 
+                textSecondCell="Credit" 
+                isHeader={true} 
+              />
+            </thead>
+            <tbody>
+              {
+                courses.map(course => (
+                  <CourseListRow 
+                    key={course.id}
+                    textFirstCell={course.name} 
+                    textSecondCell={course.credit} 
+                  />
+                ))
+              }
+            </tbody>
+          </table>
+        ) : (
+          <table id="CourseList" className='w-full border-collapse border border-gray-300'>
+            <thead>
+              <CourseListRow 
+                isHeader={true} 
+                textFirstCell="No course available yet" 
+              />
+            </thead>
+          </table>
+        )
+      }
+    </div>
+  );
 }
 
-export default CourseList;
+const CourseListWithLogging = WithLogging(CourseList);
+export default CourseListWithLogging
