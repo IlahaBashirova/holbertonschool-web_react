@@ -24,21 +24,14 @@ class Notifications extends React.Component {
     const { notifications, displayDrawer } = this.props;
 
     return (
-      <>
-        {/* When drawer is closed, show the title on the top right (menu-like) */}
-        {!displayDrawer && (
-          <div className="notifications-title fixed top-2 right-2">
-            <p>Your notifications</p>
-          </div>
-        )}
+      <div className="w-full md:w-1/4 ml-auto">
+        {/* Title must be above the panel and aligned to the right */}
+        <div className="notifications-title text-right">
+          <p>Your notifications</p>
+        </div>
 
         {displayDrawer && (
-          <div className="notifications relative ml-auto w-full md:w-1/4 border-2 border-dashed border-[var(--main-color)] p-[6px]">
-            {/* Title MUST be inside the panel (top-right) */}
-            <div className="notifications-title absolute top-2 right-2">
-              <p>Your notifications</p>
-            </div>
-
+          <div className="notifications relative border-2 border-dashed border-[var(--main-color)] p-[6px]">
             {notifications.length > 0 ? (
               <>
                 <p>Here is the list of notifications</p>
@@ -51,7 +44,7 @@ class Notifications extends React.Component {
                   <img src={closebtn} alt="Close" />
                 </button>
 
-                <ul className="mt-6 space-y-[6px]">
+                <ul className="p-[6px]">
                   {notifications.map((notification) => (
                     <NotificationItem
                       key={notification.id}
@@ -65,11 +58,11 @@ class Notifications extends React.Component {
                 </ul>
               </>
             ) : (
-              <p className="mt-6">No new notification for now</p>
+              <p>No new notification for now</p>
             )}
           </div>
         )}
-      </>
+      </div>
     );
   }
 }
