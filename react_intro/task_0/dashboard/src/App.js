@@ -1,10 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
+import logo from './holberton_logo.jpg';
 
 function App() {
   return (
     <div className="App">
-        <div className="App-header">
+      <div className="App-header">
         <img src={logo} alt="logo" />
         <h1>School dashboard</h1>
       </div>
