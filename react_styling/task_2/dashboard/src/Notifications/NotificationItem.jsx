@@ -12,24 +12,24 @@ class NotificationItem extends React.PureComponent {
 
     if (html) {
       return (
-        <li
-          data-notification-type={type}
-          className={textColor}
-          dangerouslySetInnerHTML={html}
-          onClick={() => markAsRead(id)}
-        />
+      <li
+        data-notification-type={type}
+        className={itemClass}
+        dangerouslySetInnerHTML={html}
+        onClick={() => markAsRead(id)}
+      />
       );
     }
 
-    return (
-      <li
-        data-notification-type={type}
-        className={textColor}
-        onClick={() => markAsRead(id)}
-      >
-        {value}
-      </li>
-    );
+  return (
+    <li
+      data-notification-type={type}
+      className={itemClass}
+      onClick={() => markAsRead(id)}
+    >
+    {value}
+    </li>
+  );
   }
 }
 
