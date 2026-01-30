@@ -24,34 +24,33 @@ class Notifications extends React.Component {
     const { notifications, displayDrawer } = this.props;
 
     return (
-      <div className="w-full min-[913px]:w-1/4 min-[913px]:ml-auto">
-        {/* Title should stay right-aligned */}
-        <div className="notifications-title text-right">
+      <>
+        {/* Title: top-right on desktop, centered on mobile */}
+        <div className="fixed right-6 top-6 z-50 max-[912px]:static max-[912px]:mt-6 max-[912px]:text-center">
           <p>Your notifications</p>
         </div>
 
         {displayDrawer && (
           <div
-            className={
-              "notifications relative border-2 border-dashed border-[var(--main-color)] p-[6px]" +
-              " max-[912px]:fixed max-[912px]:inset-0 max-[912px]:w-screen max-[912px]:h-screen" +
-              " max-[912px]:bg-white max-[912px]:z-50 max-[912px]:p-6"
-            }
+            className="
+              fixed right-6 top-16 z-50 w-[25%]
+              border-2 border-dashed border-[var(--main-color)] bg-white p-6
+              max-[912px]:inset-0 max-[912px]:top-0 max-[912px]:right-0 max-[912px]:w-full max-[912px]:h-full max-[912px]:p-12
+            "
           >
             {notifications.length > 0 ? (
               <>
                 <p>Here is the list of notifications</p>
 
                 <button
-                  className="absolute top-[10px] right-[10px] border-none bg-transparent cursor-pointer"
+                  className="absolute right-3 top-3 border-none bg-transparent cursor-pointer"
                   onClick={() => console.log("Close button has been clicked")}
                   aria-label="Close"
                 >
-                  <img src={closebtn} alt="Close" />
+                  <img src={closebtn} alt="Close" className="h-4 w-4" />
                 </button>
 
-                {/* bullets + spacing; more padding on mobile */}
-                <ul className="mt-4 list-disc pl-6 max-[912px]:mt-8 max-[912px]:pl-8 space-y-2">
+                <ul className="mt-3 list-disc pl-6 max-[912px]:list-none max-[912px]:pl-0">
                   {notifications.map((notification) => (
                     <NotificationItem
                       key={notification.id}
@@ -65,11 +64,11 @@ class Notifications extends React.Component {
                 </ul>
               </>
             ) : (
-              <p className="mt-4 max-[912px]:mt-8">No new notification for now</p>
+              <p>No new notification for now</p>
             )}
           </div>
         )}
-      </div>
+      </>
     );
   }
 }

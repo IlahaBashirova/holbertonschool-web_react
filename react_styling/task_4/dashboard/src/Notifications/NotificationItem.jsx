@@ -5,21 +5,21 @@ class NotificationItem extends React.PureComponent {
   render() {
     const { type, html, value, id, markAsRead } = this.props;
 
-    const textColor =
+    const colorClass =
       type === "urgent"
-        ? "text-[var(--urgent-notification-item)]"
-        : "text-[var(--default-notification-item)]";
+        ? "text-[color:var(--urgent-notification-item)]"
+        : "text-[color:var(--default-notification-item)]";
 
-    // base: compact; mobile/tablet (<912px): bigger text + 12px padding + separator
-    const itemClass =
-      `${textColor} p-[6px]` +
-      " max-[912px]:p-3 max-[912px]:text-lg max-[912px]:border max-[912px]:border-gray-300";
+    const baseClass =
+      "cursor-pointer " +
+      colorClass +
+      " max-[912px]:text-xl max-[912px]:border-b max-[912px]:border-gray-300 max-[912px]:py-4";
 
     if (html) {
       return (
         <li
           data-notification-type={type}
-          className={itemClass}
+          className={baseClass}
           dangerouslySetInnerHTML={html}
           onClick={() => markAsRead(id)}
         />
@@ -29,7 +29,7 @@ class NotificationItem extends React.PureComponent {
     return (
       <li
         data-notification-type={type}
-        className={itemClass}
+        className={baseClass}
         onClick={() => markAsRead(id)}
       >
         {value}
