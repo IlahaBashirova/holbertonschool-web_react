@@ -1,35 +1,31 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 class NotificationItem extends React.PureComponent {
   render() {
     const { type, html, value, id, markAsRead } = this.props;
-
-    const textColor =
-      type === "urgent"
-        ? "text-[var(--urgent-notification-item)]"
-        : "text-[var(--default-notification-item)]";
+    const style = { color: type === 'urgent' ? 'red' : 'blue' };
 
     if (html) {
       return (
-      <li
-        data-notification-type={type}
-        className={itemClass}
-        dangerouslySetInnerHTML={html}
-        onClick={() => markAsRead(id)}
-      />
+        <li
+          data-notification-type={type}
+          style={style}
+          dangerouslySetInnerHTML={html}
+          onClick={() => markAsRead(id)}
+        />
       );
     }
 
-  return (
-    <li
-      data-notification-type={type}
-      className={itemClass}
-      onClick={() => markAsRead(id)}
-    >
-    {value}
-    </li>
-  );
+    return (
+      <li
+        data-notification-type={type}
+        style={style}
+        onClick={() => markAsRead(id)}
+      >
+        {value}
+      </li>
+    );
   }
 }
 
@@ -44,7 +40,7 @@ NotificationItem.propTypes = {
 };
 
 NotificationItem.defaultProps = {
-  type: "default",
+  type: 'default',
   markAsRead: () => {},
 };
 
