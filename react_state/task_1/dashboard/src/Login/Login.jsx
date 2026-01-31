@@ -1,42 +1,85 @@
 import React from "react";
 
-export default function Login() {
-  return (
-    <main className="border-t-4 border-[var(--main-color)] px-12 py-8 max-[520px]:px-6">
-      <p className="font-semibold">Log in to continue</p>
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
 
-      <form className="mt-6 flex flex-col gap-4 min-[521px]:flex-row min-[521px]:items-center">
-        <label
-          htmlFor="email"
-          className="flex flex-col gap-2 min-[521px]:flex-row min-[521px]:items-center"
-        >
-          <span>Email</span>
-          <input
-            id="email"
-            type="email"
-            className="h-8 w-full border border-gray-400 px-2 min-[521px]:h-6 min-[521px]:w-28"
-          />
-        </label>
+    this.state = {
+      isLoggedIn: false,
+      email: "",
+      password: "",
+      enableSubmit: false,
+    };
 
-        <label
-          htmlFor="password"
-          className="flex flex-col gap-2 min-[521px]:flex-row min-[521px]:items-center"
-        >
-          <span>Password</span>
-          <input
-            id="password"
-            type="password"
-            className="h-8 w-full border border-gray-400 px-2 min-[521px]:h-6 min-[521px]:w-28"
-          />
-        </label>
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+    this.handleChangeEmail = this.handleChangeEmail.bind(this);
+    this.handleChangePassword = this.handleChangePassword.bind(this);
+  }
 
-        <button
-          type="submit"
-          className="h-8 border border-gray-400 px-3 text-sm min-[521px]:h-6 min-[521px]:px-2"
-        >
-          OK
-        </button>
-      </form>
-    </main>
-  );
+  isValidEmail(email) {
+    // Simple + solid email check for this task
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+
+  updateEnableSubmit(nextState = {}) {
+    const email = nextState.email !== undefined ? nextState.email : this.state.email;
+    const password =
+      nextState.password !== undefined ? nextState.password : this.state.password;
+
+    const enableSubmit = this.isValidEmail(email) && password.length >= 8;
+
+    this.setState({ enableSubmit });
+  }
+
+  handleChangeEmail(e) {
+    const email = e.target.value;
+    this.setState({ email }, () => this.updateEnableSubmit({ email }));
+  }
+
+  handleChangePassword(e) {
+    const password = e.target.value;
+    this.setState({ password }, () => this.updateEnableSubmit({ password }));
+  }
+
+  handleLoginSubmit(e) {
+    e.preventDefault(); // ✅ must not reload the page
+    this.setState({ isLoggedIn: true });
+  }
+
+  render() {
+    const { email, password, enableSubmit } = this.state;
+
+    return (
+      <div className="App-body">
+        <p>Login to access the full dashboard</p>
+
+        <form onSubmit={this.handleLoginSubmit}>
+          <label htmlFor="email">
+            Email:
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={this.handleChangeEmail}
+            />
+          </label>
+
+          <label htmlFor="password">
+            Password:
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={this.handleChangePassword}
+            />
+          </label>
+
+          <input type="submit" value="OK" disabled={!enableSubmit} />
+        </form>
+      </div>
+    );
+  }
 }
+
+export default Login;

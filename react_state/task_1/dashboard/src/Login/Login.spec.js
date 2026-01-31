@@ -1,34 +1,31 @@
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Login from "./Login";
 
-test('the text content within the 2 p elements in the app-body and app-footer divs matches', () => {
-  render(<Login />);
-  const divbody = screen.getByText(/Login to access the full dashboard/i);
+describe("Login", () => {
+  test("Submit button is disabled by default", () => {
+    render(<Login />);
+    const submit = screen.getByRole("button", { name: /ok/i });
+    expect(submit).toBeDisabled();
+  });
 
-  expect(divbody).toBeInTheDocument();
-});
+  test("Submit button becomes enabled only after email and password meet requirements", () => {
+    render(<Login />);
 
-test('renders 2 input elements', () => {
-  render(<Login />);
-  const labelemail = screen.getByLabelText(/Email/i);
-  const labelpassword = screen.getByLabelText(/Password/i);
+    const emailInput = screen.getByLabelText(/email/i);
+    const passwordInput = screen.getByLabelText(/password/i);
+    const submit = screen.getByRole("button", { name: /ok/i });
 
-  expect(labelemail).toBeInTheDocument();
-  expect(labelpassword).toBeInTheDocument();
-});
+    // Still disabled if only email is valid
+    fireEvent.change(emailInput, { target: { value: "test@test.com" } });
+    expect(submit).toBeDisabled();
 
-test('renders 2 label elements with the text Email and Password', () => {
-  render(<Login />);
-  const labelemail = screen.getByLabelText(/email/i);
-  const labelpassword = screen.getByLabelText(/password/i);
+    // Still disabled if password is too short
+    fireEvent.change(passwordInput, { target: { value: "123" } });
+    expect(submit).toBeDisabled();
 
-  expect(labelemail).toBeInTheDocument();
-  expect(labelpassword).toBeInTheDocument();
-});
-
-test('renders a button with the text OK', () => {
-  render(<Login />);
-  const button = screen.getByRole('button', { name: /ok/i });
-
-  expect(button).toBeInTheDocument();
+    // Enabled when password >= 8 and email valid
+    fireEvent.change(passwordInput, { target: { value: "12345678" } });
+    expect(submit).toBeEnabled();
+  });
 });
