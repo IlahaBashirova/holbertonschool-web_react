@@ -10,16 +10,20 @@ class NotificationItem extends React.PureComponent {
         ? "text-[color:var(--urgent-notification-item)]"
         : "text-[color:var(--default-notification-item)]";
 
-    const baseClass =
-      "cursor-pointer " +
-      colorClass +
-      " max-[912px]:text-xl max-[912px]:border-b max-[912px]:border-gray-300 max-[912px]:py-4";
+    // ✅ Task 4: borders + padding on smaller screens
+    const liClass = [
+      colorClass,
+      "cursor-pointer",
+      "max-[912px]:border-b max-[912px]:border-gray-300",
+      "max-[912px]:px-3 max-[912px]:py-4", // 12px padding on mobile/tablet
+      "max-[912px]:text-lg max-[520px]:text-base",
+    ].join(" ");
 
     if (html) {
       return (
         <li
           data-notification-type={type}
-          className={baseClass}
+          className={liClass}
           dangerouslySetInnerHTML={html}
           onClick={() => markAsRead(id)}
         />
@@ -29,7 +33,7 @@ class NotificationItem extends React.PureComponent {
     return (
       <li
         data-notification-type={type}
-        className={baseClass}
+        className={liClass}
         onClick={() => markAsRead(id)}
       >
         {value}
@@ -39,9 +43,11 @@ class NotificationItem extends React.PureComponent {
 }
 
 NotificationItem.propTypes = {
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   value: PropTypes.string,
-  html: PropTypes.shape({ __html: PropTypes.string }),
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
   id: PropTypes.number,
   markAsRead: PropTypes.func,
 };
