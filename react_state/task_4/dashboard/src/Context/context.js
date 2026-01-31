@@ -1,16 +1,14 @@
-import React from 'react';
+import React from "react";
 
-const user = {
-  email: '',
-  password: '',
+const defaultUser = {
+  email: "",
+  password: "",
   isLoggedIn: false,
 };
 
-const logOut = () => {};
-
-const newContext = React.createContext({
-  user,
-  logOut,
+const AppContext = React.createContext({
+  user: defaultUser,
+  logOut: () => {},
 });
 
-export default newContext;
+export default AppContext;

@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
+import AppContext from "../Context/context";
 
 export default function Footer() {
+  const { user } = useContext(AppContext);
+
   return (
-    <footer className="fixed bottom-0 left-0 w-full border-t-4 border-[var(--main-color)] bg-white py-4 text-center italic">
-      <p>Copyright {new Date().getFullYear()} - Holberton School</p>
+    <footer className="App-footer">
+      <p>Copyright 2026 - Holberton School</p>
+
+      {user && user.isLoggedIn && (
+        <p>
+          <a href="#">Contact us</a>
+        </p>
+      )}
     </footer>
   );
 }
