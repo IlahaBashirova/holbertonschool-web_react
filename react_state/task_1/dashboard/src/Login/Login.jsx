@@ -17,18 +17,18 @@ class Login extends React.Component {
   }
 
   isValidEmail(email) {
-    // Simple + solid email check for this task
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+    // Strict enough for tests: needs something@something.something
+    // (no spaces, requires a dot after @, and a 2+ letters TLD)
+    const re = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    return re.test(String(email).trim());
   }
 
-  updateEnableSubmit(nextState = {}) {
-    const email = nextState.email !== undefined ? nextState.email : this.state.email;
+  updateEnableSubmit(next = {}) {
+    const email = next.email !== undefined ? next.email : this.state.email;
     const password =
-      nextState.password !== undefined ? nextState.password : this.state.password;
+      next.password !== undefined ? next.password : this.state.password;
 
     const enableSubmit = this.isValidEmail(email) && password.length >= 8;
-
     this.setState({ enableSubmit });
   }
 
@@ -43,7 +43,7 @@ class Login extends React.Component {
   }
 
   handleLoginSubmit(e) {
-    e.preventDefault(); // ✅ must not reload the page
+    e.preventDefault();
     this.setState({ isLoggedIn: true });
   }
 
