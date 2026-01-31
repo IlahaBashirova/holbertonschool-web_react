@@ -1,29 +1,32 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import Notifications from "../Notifications/Notifications";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import BodySection from "../BodySection/BodySection";
-import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
 import Login from "../Login/Login";
 import CourseList from "../CourseList/CourseList";
+import BodySection from "../BodySection/BodySection";
+import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
+
 import { getLatestNotification } from "../utils/utils";
-import AppContext from "../Context/context";
+import AppContext, { defaultUser } from "../Context/context";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
+    this.handleHideDrawer = this.handleHideDrawer.bind(this);
+
     this.logIn = this.logIn.bind(this);
     this.logOut = this.logOut.bind(this);
 
     this.state = {
-      user: {
-        email: "",
-        password: "",
-        isLoggedIn: false,
-      },
-      logOut: this.logOut,
+      displayDrawer: false,
+      user: defaultUser,
+      logOut: this.logOut, // <- referenced in Context value
     };
   }
 
@@ -42,6 +45,14 @@ class App extends React.Component {
     }
   }
 
+  handleDisplayDrawer() {
+    this.setState({ displayDrawer: true });
+  }
+
+  handleHideDrawer() {
+    this.setState({ displayDrawer: false });
+  }
+
   logIn(email, password) {
     this.setState({
       user: {
@@ -54,15 +65,13 @@ class App extends React.Component {
 
   logOut() {
     this.setState({
-      user: {
-        email: "",
-        password: "",
-        isLoggedIn: false,
-      },
+      user: defaultUser,
     });
   }
 
   render() {
+    const { displayDrawer, user } = this.state;
+
     const notificationsList = [
       { id: 1, type: "default", value: "New course available" },
       { id: 2, type: "urgent", value: "New resume available" },
@@ -75,14 +84,15 @@ class App extends React.Component {
       { id: 3, name: "React", credit: 40 },
     ];
 
-    const { user } = this.state;
-
     return (
       <AppContext.Provider value={this.state}>
         <>
-          <div className="root-notifications">
-            <Notifications notifications={notificationsList} />
-          </div>
+          <Notifications
+            notifications={notificationsList}
+            displayDrawer={displayDrawer}
+            handleDisplayDrawer={this.handleDisplayDrawer}
+            handleHideDrawer={this.handleHideDrawer}
+          />
 
           <Header />
 
@@ -93,7 +103,7 @@ class App extends React.Component {
           ) : (
             <BodySectionWithMarginBottom title="Log in to continue">
               <Login
-                login={this.logIn}
+                logIn={this.logIn}
                 email={user.email}
                 password={user.password}
               />
@@ -110,5 +120,9 @@ class App extends React.Component {
     );
   }
 }
+
+App.propTypes = {
+  // no isLoggedIn/logOut props anymore in task_2
+};
 
 export default App;

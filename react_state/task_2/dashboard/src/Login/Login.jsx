@@ -5,85 +5,83 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      email: props.email || "",
-      password: props.password || "",
-      enableSubmit: false,
-    };
-
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+
+    this.state = {
+      email: props.email,
+      password: props.password,
+      enableSubmit: false,
+    };
   }
 
-  isValidEmail(email) {
-    // simple/standard email validation
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  updateEnableSubmit(nextState) {
-    const emailOk = this.isValidEmail(nextState.email);
-    const passwordOk = nextState.password.length >= 8;
-    this.setState({ enableSubmit: emailOk && passwordOk });
+  validateForm(email, password) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) && password.length >= 8;
   }
 
   handleChangeEmail(e) {
     const email = e.target.value;
-    this.setState({ email }, () => this.updateEnableSubmit(this.state));
+    this.setState((prev) => ({
+      email,
+      enableSubmit: this.validateForm(email, prev.password),
+    }));
   }
 
   handleChangePassword(e) {
     const password = e.target.value;
-    this.setState({ password }, () => this.updateEnableSubmit(this.state));
+    this.setState((prev) => ({
+      password,
+      enableSubmit: this.validateForm(prev.email, password),
+    }));
   }
 
   handleLoginSubmit(e) {
     e.preventDefault();
-    const { email, password, enableSubmit } = this.state;
-    if (!enableSubmit) return;
-
-    this.props.login(email, password);
+    const { email, password } = this.state;
+    this.props.logIn(email, password);
   }
 
   render() {
-    const { enableSubmit, email, password } = this.state;
+    const { email, password, enableSubmit } = this.state;
 
     return (
-      <div className="App-body">
-        <p>Login to access the full dashboard</p>
-
-        <form onSubmit={this.handleLoginSubmit}>
-          <label htmlFor="email">Email</label>
+      <form onSubmit={this.handleLoginSubmit}>
+        <label htmlFor="email">
+          Email
           <input
             id="email"
             type="email"
             value={email}
             onChange={this.handleChangeEmail}
           />
+        </label>
 
-          <label htmlFor="password">Password</label>
+        <label htmlFor="password">
+          Password
           <input
             id="password"
             type="password"
             value={password}
             onChange={this.handleChangePassword}
           />
+        </label>
 
-          <input type="submit" value="OK" disabled={!enableSubmit} />
-        </form>
-      </div>
+        <input type="submit" value="OK" disabled={!enableSubmit} />
+      </form>
     );
   }
 }
 
 Login.propTypes = {
-  login: PropTypes.func,
+  logIn: PropTypes.func,
   email: PropTypes.string,
   password: PropTypes.string,
 };
 
 Login.defaultProps = {
-  login: () => {},
+  logIn: () => {},
   email: "",
   password: "",
 };
