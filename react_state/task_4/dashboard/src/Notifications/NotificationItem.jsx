@@ -3,10 +3,7 @@ import PropTypes from "prop-types";
 
 export default function NotificationItem({ id, type, value, html, markAsRead }) {
   return (
-    <li
-      data-notification-type={type}
-      onClick={() => markAsRead(id)}
-    >
+    <li data-notification-type={type} onClick={() => markAsRead(id)}>
       {html ? <span dangerouslySetInnerHTML={html} /> : value}
     </li>
   );

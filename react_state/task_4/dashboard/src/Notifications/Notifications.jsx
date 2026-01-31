@@ -1,6 +1,6 @@
 import React from "react";
-import NotificationItem from "./NotificationItem";
 import PropTypes from "prop-types";
+import NotificationItem from "./NotificationItem";
 
 class Notifications extends React.PureComponent {
   render() {
@@ -10,13 +10,13 @@ class Notifications extends React.PureComponent {
       <div className="Notifications">
         <p>Here is the list of notifications</p>
         <ul>
-          {notifications.map((notif) => (
+          {notifications.map((n) => (
             <NotificationItem
-              key={notif.id}
-              id={notif.id}
-              type={notif.type}
-              value={notif.value}
-              html={notif.html}
+              key={n.id}
+              id={n.id}
+              type={n.type}
+              value={n.value}
+              html={n.html}
               markAsRead={markNotificationAsRead}
             />
           ))}
