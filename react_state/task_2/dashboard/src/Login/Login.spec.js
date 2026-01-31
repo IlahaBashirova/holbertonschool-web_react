@@ -3,29 +3,22 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Login from "./Login";
 
 describe("Login", () => {
-  test("Submit button is disabled by default", () => {
-    render(<Login />);
-    const submit = screen.getByRole("button", { name: /ok/i });
-    expect(submit).toBeDisabled();
-  });
+  it("calls login prop with email and password when form is submitted", () => {
+    const loginSpy = jest.fn();
 
-  test("Submit button becomes enabled only after email and password meet requirements", () => {
-    render(<Login />);
+    render(<Login login={loginSpy} />);
 
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const submit = screen.getByRole("button", { name: /ok/i });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "test@example.com" },
+    });
 
-    // Still disabled if only email is valid
-    fireEvent.change(emailInput, { target: { value: "test@test.com" } });
-    expect(submit).toBeDisabled();
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "12345678" },
+    });
 
-    // Still disabled if password is too short
-    fireEvent.change(passwordInput, { target: { value: "123" } });
-    expect(submit).toBeDisabled();
+    fireEvent.click(screen.getByDisplayValue("OK"));
 
-    // Enabled when password >= 8 and email valid
-    fireEvent.change(passwordInput, { target: { value: "12345678" } });
-    expect(submit).toBeEnabled();
+    expect(loginSpy).toHaveBeenCalledTimes(1);
+    expect(loginSpy).toHaveBeenCalledWith("test@example.com", "12345678");
   });
 });

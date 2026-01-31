@@ -2,40 +2,30 @@ import React from "react";
 import Notifications from "../Notifications/Notifications";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
-import PropTypes from "prop-types";
-import { getLatestNotification } from "../utils/utils";
 import BodySection from "../BodySection/BodySection";
 import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
-import WithLogging from "../HOC/WithLogging";
-
-import LoginBase from "../Login/Login";
-import CourseListBase from "../CourseList/CourseList";
-
-const Login = WithLogging(LoginBase);
-const CourseList = WithLogging(CourseListBase);
+import Login from "../Login/Login";
+import CourseList from "../CourseList/CourseList";
+import { getLatestNotification } from "../utils/utils";
+import AppContext from "../Context/context";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      displayDrawer: false,
-    };
-
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
+    this.logIn = this.logIn.bind(this);
+    this.logOut = this.logOut.bind(this);
+
+    this.state = {
+      user: {
+        email: "",
+        password: "",
+        isLoggedIn: false,
+      },
+      logOut: this.logOut,
+    };
   }
-
-  static defaultProps = {
-    logOut: () => {},
-    isLoggedIn: false,
-  };
-
-  static propTypes = {
-    logOut: PropTypes.func,
-    isLoggedIn: PropTypes.bool,
-  };
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown);
@@ -48,24 +38,33 @@ class App extends React.Component {
   handleKeyDown(e) {
     if (e.ctrlKey && e.key === "h") {
       alert("Logging you out");
-      this.props.logOut();
+      this.logOut();
     }
   }
 
-  handleDisplayDrawer() {
-    this.setState({ displayDrawer: true });
+  logIn(email, password) {
+    this.setState({
+      user: {
+        email,
+        password,
+        isLoggedIn: true,
+      },
+    });
   }
 
-  handleHideDrawer() {
-    this.setState({ displayDrawer: false });
+  logOut() {
+    this.setState({
+      user: {
+        email: "",
+        password: "",
+        isLoggedIn: false,
+      },
+    });
   }
 
   render() {
-    const { isLoggedIn } = this.props;
-    const { displayDrawer } = this.state;
-
     const notificationsList = [
-      { id: 1, type: "urgent", value: "New course available" },
+      { id: 1, type: "default", value: "New course available" },
       { id: 2, type: "urgent", value: "New resume available" },
       { id: 3, type: "urgent", html: { __html: getLatestNotification() } },
     ];
@@ -76,35 +75,38 @@ class App extends React.Component {
       { id: 3, name: "React", credit: 40 },
     ];
 
+    const { user } = this.state;
+
     return (
-      <>
-        <div className="root-notifications">
-          <Notifications
-            notifications={notificationsList}
-            displayDrawer={displayDrawer}
-            handleDisplayDrawer={this.handleDisplayDrawer}
-            handleHideDrawer={this.handleHideDrawer}
-          />
-        </div>
+      <AppContext.Provider value={this.state}>
+        <>
+          <div className="root-notifications">
+            <Notifications notifications={notificationsList} />
+          </div>
 
-        <Header />
+          <Header />
 
-        {isLoggedIn ? (
-          <BodySectionWithMarginBottom title="Course list">
-            <CourseList courses={coursesList} />
-          </BodySectionWithMarginBottom>
-        ) : (
-          <BodySectionWithMarginBottom title="Log in to continue">
-            <Login />
-          </BodySectionWithMarginBottom>
-        )}
+          {user.isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList courses={coursesList} />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login
+                login={this.logIn}
+                email={user.email}
+                password={user.password}
+              />
+            </BodySectionWithMarginBottom>
+          )}
 
-        <BodySection title="News from the School">
-          <p>Holberton School News goes here</p>
-        </BodySection>
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
 
-        <Footer />
-      </>
+          <Footer />
+        </>
+      </AppContext.Provider>
     );
   }
 }
